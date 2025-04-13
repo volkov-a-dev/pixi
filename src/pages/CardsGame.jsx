@@ -8,7 +8,7 @@ import {
     Text,
 } from 'pixi.js';
 
-import { CardsGame } from './game';
+import { CardsGame } from '@components/CardsGame/GameContainer';
 
 extend({
     Container,

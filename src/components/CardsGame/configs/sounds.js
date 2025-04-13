@@ -1,6 +1,6 @@
-import correctPlacementSound from '@/assets/sounds/correct.wav'
-import wrongPlacementSound from '@/assets/sounds/wrong.wav'
-import dropSound from '@/assets/sounds/drop.wav'
+import correctPlacementSound from '@/assets/sounds/cards/correct.wav'
+import wrongPlacementSound from '@/assets/sounds/cards/wrong.wav'
+import dropSound from '@/assets/sounds/cards/drop.wav'
 
 export const SOUNDS = {
   CORRECT_PLACEMENT: correctPlacementSound,

@@ -1,26 +1,32 @@
-import { extend, useTick } from '@pixi/react';
-import { Container, Graphics, Text, Sprite, Rectangle } from 'pixi.js';
-import { useCallback } from 'react';
-import gsap from 'gsap';
+import { extend, useTick } from '@pixi/react'
+import {
+    Container,
+    Graphics,
+    Text,
+    Sprite,
+    Rectangle,
+} from 'pixi.js';
+import { useCallback } from 'react'
+import gsap from 'gsap'
 
-import { SUIT_COLORS, CARD_WIDTH, CARD_HEIGHT, TARGET_SIZE, ANIMATION } from './constants/index';
-
-import { useTextureLoader } from './hooks/useTextureLoader';
-import { useGameState } from './hooks/useGameState';
-import { useSound } from './hooks/useSound';
-import { Target, Card } from './components';
+import {  TARGETS_CARDS, SUIT_COLORS, CARD_WIDTH, CARD_HEIGHT, TARGET_SIZE, ANIMATION } from './constants/index'
+import { useTextureLoader } from './hooks/useTextureLoader'
+import { useGameState } from './hooks/useGameState'
+import { useSound } from './hooks/useSound'
+import { Target } from './components/Target'
+import { Card } from './components/Card'
 
 extend({
-  Container,
-  Graphics,
-  Text,
-  Sprite,
-  Rectangle,
-});
+    Container,
+    Graphics,
+    Text,
+    Sprite,
+    Rectangle,
+})
 
-export const CardsGame = () => {
-  const loadedTextures = useTextureLoader();
-  const { playSound } = useSound();
+
+export function CardsGame() {
+  const loadedTextures = useTextureLoader()
   const {
     cards,
     setCards,
@@ -30,92 +36,89 @@ export const CardsGame = () => {
     dragOffset,
     setDragOffset,
     mousePosition,
-    setMousePosition,
-  } = useGameState(loadedTextures);
+    setMousePosition
+  } = useGameState(loadedTextures)
+  const { playCorrectPlacement, playWrongPlacement, playDrag } = useSound()
 
   useTick(() => {
     if (draggedCard) {
-      const newX = mousePosition.x - dragOffset.x;
-      const newY = mousePosition.y - dragOffset.y;
+      const newX = mousePosition.x - dragOffset.x
+      const newY = mousePosition.y - dragOffset.y
 
-      setCards(prevCards =>
-        prevCards.map(prevCard =>
-          prevCard.id === draggedCard.id ? { ...prevCard, x: newX, y: newY } : prevCard
-        )
-      );
+      setCards(prevCards => prevCards.map(prevCard => 
+        prevCard.id === draggedCard.id 
+          ? { ...prevCard, x: newX, y: newY }
+          : prevCard
+      ))
     }
-  });
+  })
 
-  const handlePointerDown = useCallback(
-    (event, card) => {
-      if (card.isPlaced) return;
+  const handlePointerDown = useCallback((event, card) => {
+    if (card.isPlaced) return
 
-      const cardGlobalX = card.x;
-      const cardGlobalY = card.y;
+    const cardGlobalX = card.x
+    const cardGlobalY = card.y
+    
+    setDraggedCard(card)
+    setMousePosition({ x: event.global.x, y: event.global.y })
+    setDragOffset({
+      x: event.global.x - cardGlobalX,
+      y: event.global.y - cardGlobalY
+    })
 
-      setDraggedCard(card);
-      setMousePosition({ x: event.global.x, y: event.global.y });
-      setDragOffset({
-        x: event.global.x - cardGlobalX,
-        y: event.global.y - cardGlobalY,
-      });
+    playDrag()
+  }, [playDrag])
 
-      // Play pick sound
-      playSound('PICK');
-    },
-    [playSound]
-  );
-
-  const handlePointerMove = useCallback(event => {
-    setMousePosition({ x: event.global.x, y: event.global.y });
-  }, []);
+  const handlePointerMove = useCallback((event) => {
+    setMousePosition({ x: event.global.x, y: event.global.y })
+  }, [])
 
   const handlePointerUp = useCallback(() => {
-    if (!draggedCard) return;
+    if (!draggedCard) return
 
-    const card = cards.find(c => c.id === draggedCard.id);
-
+    const card = cards.find(c => c.id === draggedCard.id)
+    
     const targetHit = targets.find(t => {
-      const isInTarget =
+      const isInTarget = (
         card.x + CARD_WIDTH / 2 > t.x &&
         card.x + CARD_WIDTH / 2 < t.x + TARGET_SIZE &&
         card.y + CARD_HEIGHT / 2 > t.y &&
-        card.y + CARD_HEIGHT / 2 < t.y + TARGET_SIZE;
-      return isInTarget;
-    });
+        card.y + CARD_HEIGHT / 2 < t.y + TARGET_SIZE
+      )
+      return isInTarget
+    })
 
-    const isCorrectPosition = targetHit && SUIT_COLORS[card.suit] === targetHit.suit;
-    const newPositionX = isCorrectPosition ? targetHit.x : card.originalX;
-    const newPositionY = isCorrectPosition ? targetHit.y : card.originalY;
-
+    const isCorrectPosition = targetHit && SUIT_COLORS[card.suit] === targetHit.suit
+    let newPositionX = isCorrectPosition ? targetHit.x : card.originalX
+    let newPositionY = isCorrectPosition ? targetHit.y : card.originalY
+    
+    // Play appropriate sound
     if (isCorrectPosition) {
-      playSound('CORRECT');
+      playCorrectPlacement()
     } else {
-      playSound('WRONG');
+      playWrongPlacement()
     }
-
-    playSound('DROP');
-
+    
     gsap.to(card, {
       x: newPositionX,
       y: newPositionY,
       duration: ANIMATION.DURATION,
       ease: ANIMATION.EASE,
       onUpdate: () => {
-        setCards(prevCards =>
-          prevCards.map(prevCard =>
-            prevCard.id === card.id ? { ...prevCard, x: card.x, y: card.y } : prevCard
-          )
-        );
-      },
-    });
+        setCards(prevCards => prevCards.map(prevCard => 
+          prevCard.id === card.id 
+            ? { ...prevCard, x: card.x, y: card.y }
+            : prevCard
+        ))
+      }
+    })
 
-    setDraggedCard(null);
-    setDragOffset({ x: 0, y: 0 });
-  }, [draggedCard, cards, targets, setCards, playSound]);
+    setDraggedCard(null)
+    setDragOffset({ x: 0, y: 0 })
+  }, [draggedCard, cards, targets, setCards, playCorrectPlacement, playWrongPlacement])
 
   if (Object.keys(loadedTextures).length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -124,7 +127,7 @@ export const CardsGame = () => {
         <Target key={target.id} target={target} loadedTextures={loadedTextures} />
       ))}
 
-      <pixiContainer sortableChildren>
+      <pixiContainer sortableChildren={true}>
         {cards.map(card => (
           <Card
             key={card.id}
@@ -138,5 +141,9 @@ export const CardsGame = () => {
         ))}
       </pixiContainer>
     </>
-  );
-};
+  )
+}
+
+
+
+
