@@ -1,0 +1,157 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest": true
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": ["src"],
+                "extensions": [".js", ".jsx"],
+                "moduleDirectory": ["node_modules", "src/"]
+            }
+        }
+    },
+    "extends": ["airbnb", "prettier", "plugin:jsx-a11y/recommended"],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module",
+        "requireConfigFile": false,
+          "babelOptions": {
+            "presets": ["@babel/preset-react"]
+        }
+    },
+    "plugins": ["prettier", "jsx-a11y", "react-hooks"],
+    "rules": {
+        "prettier/prettier": [
+            "warn",
+            {
+                "endOfLine": "auto"
+            }
+        ],
+        "semi": ["error", "always"],
+        "indent": "off",
+        "react/jsx-indent": "off",
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [".js", ".jsx"]
+            }
+        ],
+        "react/destructuring-assignment": ["off", "always"],
+        "import/prefer-default-export": "off",
+        "linebreak-style": 0,
+        "max-len": [
+            2,
+            120,
+            {
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true,
+                "ignoreComments": true
+            }
+        ],
+        "react/sort-comp": [
+            2,
+            {
+                "order": [
+                    "static-methods",
+                    "lifecycle",
+                    "/^handle.+$/",
+                    "/^on.+$/",
+                    "/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/",
+                    "everything-else",
+                    ",/^render.+$/",
+                    "render"
+                ]
+            }
+        ],
+        "react/prop-types": 0,
+        "class-methods-use-this": "off",
+        "comma-dangle": ["error", "never"],
+        "no-param-reassign": "off",
+        "react/jsx-one-expression-per-line": 0,
+        "react/jsx-boolean-value": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "curly": ["error", "all"],
+        "react/jsx-props-no-spreading": "off",
+        "react/default-props-match-prop-types": [
+            "error",
+            {
+                "allowRequiredDefaults": true
+            }
+        ],
+        "quotes": ["warn", "single", { "avoidEscape": true }],
+        "no-multi-spaces": "error",
+        "camelcase": "off",
+        "no-plusplus": "error",
+        "no-unused-vars": "error",
+        "no-restricted-syntax": "error",
+        "no-use-before-define": "error",
+        "no-unused-expressions": "error",
+        "no-shadow": "error",
+        "react/require-default-props": "error",
+        "react/forbid-prop-types": "error",
+        "jsx-a11y/click-events-have-key-events": "error",
+        "consistent-return": "error",
+        "jsx-a11y/no-static-element-interactions": "error",
+        "no-duplicate-imports": "off",
+        "react/function-component-definition": "off",
+        "default-param-last": "off",
+        "no-unsafe-optional-chaining": "off",
+        
+           "react/no-unstable-nested-components": [
+            "warn",
+            {
+                "allowAsProps": true
+            }
+        ],
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": [
+                    ".storybook/**",
+                    "stories/**",
+                    "**/*.stories.{js,jsx}",
+                    "**/*.setup.js",
+                    "**/*.config.js",
+                    "**/*.test.js",
+                    "**/test/**",
+                    "**/tests/**",
+                    "**/stories/**"
+                ]
+            }
+        ],
+        "no-restricted-imports": [
+            "warn",
+            {
+                "patterns": [
+                    {
+                        "group": ["@candid/candid-style/dist/*"],
+                        "message": "Usage of candid-style/dist/* modules not allowed. Please use material ui theme."
+                    }
+                ]
+            }
+        ],
+        "react/no-array-index-key": "off"
+    },
+    "overrides": [
+        {
+            "files": ["**/*.stories.{js,jsx}"],
+            "rules": {
+                "no-console": "off"
+            }
+        },
+        {
+            "files": ["**/ThemeProvider/**/*"],
+            "rules": {
+                "no-restricted-imports": "off"
+            }
+        }
+    ]
+}
