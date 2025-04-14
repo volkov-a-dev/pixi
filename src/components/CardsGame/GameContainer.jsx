@@ -9,12 +9,13 @@ import {
 import { useCallback } from 'react'
 import gsap from 'gsap'
 
-import {  TARGETS_CARDS, SUIT_COLORS, CARD_WIDTH, CARD_HEIGHT, TARGET_SIZE, ANIMATION } from './constants/index'
-import { useTextureLoader } from './hooks/useTextureLoader'
+import { SUIT_COLORS, CARD_WIDTH, CARD_HEIGHT, TARGET_SIZE, ANIMATION } from './constants/index'
+import { useTextureLoader } from '@hooks/useTextureLoader'
 import { useGameState } from './hooks/useGameState'
 import { useSound } from './hooks/useSound'
 import { Target } from './components/Target'
 import { Card } from './components/Card'
+import { TEXTURE_URLS } from './configs/cards'
 
 extend({
     Container,
@@ -24,9 +25,8 @@ extend({
     Rectangle,
 })
 
-
 export function CardsGame() {
-  const loadedTextures = useTextureLoader()
+  const loadedTextures = useTextureLoader({TEXTURE_URLS})
   const {
     cards,
     setCards,
@@ -121,6 +121,7 @@ export function CardsGame() {
     return null
   }
 
+  console.log('loadedTextures', loadedTextures)
   return (
     <>
       {targets.map(target => (

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Assets } from 'pixi.js'
-import { TEXTURE_URLS } from '../configs/cards'
 
-export const useTextureLoader = () => {
+
+export const useTextureLoader = ({TEXTURE_URLS}) => {
   const [loadedTextures, setLoadedTextures] = useState({})
 
   useEffect(() => {
